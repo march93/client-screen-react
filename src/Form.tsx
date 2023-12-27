@@ -65,6 +65,7 @@ const formBirth = (
           label="Birth Year"
           type="number"
           variant="standard"
+          inputProps={{ min: 0, max: new Date().getFullYear() }}
           style={{ minWidth: '50%' }}
           value={birthYear}
           onChange={(e) => setBirthYear(parseInt(e.target.value))}
