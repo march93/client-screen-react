@@ -92,7 +92,7 @@ const formBirth = (
         error={birthError}
         value={birthyear}
         onChange={(e) => {
-          if (!!!e.target.value) {
+          if (e.target.value !== undefined) {
             setBirthError(false);
           }
 
@@ -254,6 +254,13 @@ function Form() {
             setSearched
           )}
           <p style={{ color: 'red', paddingTop: '1em' }}>{errorMessage}</p>
+          {searched && (
+            <b>
+              {!nameMatched && !birthYearMatched && !countryMatched
+                ? 'Clear'
+                : 'Hit'}
+            </b>
+          )}
         </CardContent>
         <CardActions style={{ justifyContent: 'flex-end' }}>
           <Button size="medium" variant="contained" onClick={search}>
