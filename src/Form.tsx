@@ -19,7 +19,9 @@ import {
 const formName = (
   name: string,
   setName: React.Dispatch<React.SetStateAction<string>>,
-  nameMatched: boolean
+  nameMatched: boolean,
+  nameError: boolean,
+  setNameError: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   return (
     <>
@@ -32,8 +34,15 @@ const formName = (
           label="Full Name"
           variant="standard"
           style={{ minWidth: '50%' }}
+          error={nameError}
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.length > 0) {
+              setNameError(false);
+            }
+
+            setName(e.target.value);
+          }}
         />
         <Box
           sx={{
@@ -52,7 +61,9 @@ const formName = (
 const formBirth = (
   birthYear: number | undefined,
   setBirthYear: React.Dispatch<React.SetStateAction<number | undefined>>,
-  birthYearMatched: boolean
+  birthYearMatched: boolean,
+  birthError: boolean,
+  setBirthError: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   return (
     <>
@@ -67,8 +78,15 @@ const formBirth = (
           variant="standard"
           inputProps={{ min: 0, max: new Date().getFullYear() }}
           style={{ minWidth: '50%' }}
+          error={birthError}
           value={birthYear}
-          onChange={(e) => setBirthYear(parseInt(e.target.value))}
+          onChange={(e) => {
+            if (e.target.value !== undefined) {
+              setBirthError(false);
+            }
+
+            setBirthYear(parseInt(e.target.value));
+          }}
         />
         <Box
           sx={{
@@ -87,7 +105,9 @@ const formBirth = (
 const formCountry = (
   country: string,
   setCountry: React.Dispatch<React.SetStateAction<string>>,
-  countryMatched: boolean
+  countryMatched: boolean,
+  countryError: boolean,
+  setCountryError: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   return (
     <>
@@ -100,8 +120,15 @@ const formCountry = (
           label="Country"
           variant="standard"
           style={{ minWidth: '50%' }}
+          error={countryError}
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value.length > 0) {
+              setCountryError(false);
+            }
+
+            setCountry(e.target.value);
+          }}
         />
         <Box
           sx={{
@@ -126,6 +153,11 @@ function Form() {
   const [birthYearMatched, setBirthYearMatched] = React.useState(false);
   const [countryMatched, setCountryMatched] = React.useState(false);
 
+  // Error States
+  const [nameError, setNameError] = React.useState(false);
+  const [birthError, setBirthError] = React.useState(false);
+  const [countryError, setCountryError] = React.useState(false);
+
   return (
     <Grid
       container
@@ -143,9 +175,21 @@ function Form() {
             OFAC User Search
           </Typography>
 
-          {formName(name, setName, nameMatched)}
-          {formBirth(birthYear, setBirthYear, birthYearMatched)}
-          {formCountry(country, setCountry, countryMatched)}
+          {formName(name, setName, nameMatched, nameError, setNameError)}
+          {formBirth(
+            birthYear,
+            setBirthYear,
+            birthYearMatched,
+            birthError,
+            setBirthError
+          )}
+          {formCountry(
+            country,
+            setCountry,
+            countryMatched,
+            countryError,
+            setCountryError
+          )}
         </CardContent>
         <CardActions style={{ justifyContent: 'flex-end' }}>
           <Button size="medium" variant="contained">
