@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 interface SearchResult {
   name: boolean;
@@ -171,32 +171,40 @@ function Form() {
   const [nameError, setNameError] = React.useState(false);
   const [birthError, setBirthError] = React.useState(false);
   const [countryError, setCountryError] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   const search = async () => {
-    setSearched(true);
+    try {
+      setSearched(true);
+      setErrorMessage('');
 
-    if (!name || !!!birthyear || !country) {
-      // Set error states if any are empty
-      setNameError(!!!name);
-      setBirthError(!!!birthyear);
-      setCountryError(!!!country);
-      return;
-    }
-
-    const request = await axios.post(
-      `${process.env.REACT_APP_BACKEND_URL}/search`,
-      {
-        name,
-        birthyear,
-        country,
+      if (!name || !!!birthyear || !country) {
+        // Set error states if any are empty
+        setNameError(!!!name);
+        setBirthError(!!!birthyear);
+        setCountryError(!!!country);
+        return;
       }
-    );
-    const data: SearchResult = request.data;
 
-    // Update matcher states
-    setNameMatched(data.name);
-    setBirthYearMatched(data.dob);
-    setCountryMatched(data.citizenship);
+      const request = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/search`,
+        {
+          name,
+          birthyear,
+          country,
+        }
+      );
+      const data: SearchResult = request.data;
+
+      // Update matcher states
+      setNameMatched(data.name);
+      setBirthYearMatched(data.dob);
+      setCountryMatched(data.citizenship);
+    } catch (e) {
+      const error = e as AxiosError;
+      const data = error.response?.data;
+      setErrorMessage((data as { error: string }).error as string);
+    }
   };
 
   return (
@@ -243,6 +251,7 @@ function Form() {
             searched,
             setSearched
           )}
+          <p style={{ color: 'red', paddingTop: '1em' }}>{errorMessage}</p>
         </CardContent>
         <CardActions style={{ justifyContent: 'flex-end' }}>
           <Button size="medium" variant="contained" onClick={search}>
