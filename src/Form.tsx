@@ -175,7 +175,6 @@ function Form() {
 
   const search = async () => {
     try {
-      setSearched(true);
       setErrorMessage('');
 
       if (!name || !!!birthyear || !country) {
@@ -200,6 +199,9 @@ function Form() {
       setNameMatched(data.name);
       setBirthYearMatched(data.dob);
       setCountryMatched(data.citizenship);
+
+      // Allow checkmarks to be shown
+      setSearched(true);
     } catch (e) {
       const error = e as AxiosError;
       const data = error.response?.data;
